@@ -124,8 +124,7 @@ async def register_speaker(
 
     tmp_path = save_upload_to_temp(prompt_wav)
     try:
-        prompt_speech = load_wav(tmp_path, 16000)
-        success = cosyvoice.add_zero_shot_spk(prompt_text, prompt_speech, speaker_id)
+        success = cosyvoice.add_zero_shot_spk(prompt_text, tmp_path, speaker_id)
         if not success:
             raise HTTPException(500, "注册音色失败")
         # 持久化
@@ -198,10 +197,9 @@ async def tts_zero_shot(
         if prompt_wav is not None:
             # 实时克隆模式
             tmp_path = save_upload_to_temp(prompt_wav)
-            prompt_speech = load_wav(tmp_path, 16000)
             all_pcm = []
             for chunk in cosyvoice.inference_zero_shot(
-                tts_text, prompt_text, prompt_speech,
+                tts_text, prompt_text, tmp_path,
                 stream=False, speed=speed
             ):
                 all_pcm.append(chunk['tts_speech'].numpy().flatten())
@@ -248,10 +246,9 @@ async def tts_cross_lingual(
 
     tmp_path = save_upload_to_temp(prompt_wav)
     try:
-        prompt_speech = load_wav(tmp_path, 16000)
         all_pcm = []
         for chunk in cosyvoice.inference_cross_lingual(
-            tts_text, prompt_speech, stream=False, speed=speed
+            tts_text, tmp_path, stream=False, speed=speed
         ):
             all_pcm.append(chunk['tts_speech'].numpy().flatten())
 
@@ -303,11 +300,10 @@ async def tts_instruct(
         else:
             # v2/v3 instruct2 模式
             if prompt_wav is None:
-                raise HTTPException(400, "v2/v3 模型的 instruct 模式需要 prompt_wav")
+                raise HTTPException(400, "v2/v3 模型的 instruct 模式 need prompt_wav")
             tmp_path = save_upload_to_temp(prompt_wav)
-            prompt_speech = load_wav(tmp_path, 16000)
             for chunk in cosyvoice.inference_instruct2(
-                tts_text, instruct_text, prompt_speech,
+                tts_text, instruct_text, tmp_path,
                 stream=False, speed=speed
             ):
                 all_pcm.append(chunk['tts_speech'].numpy().flatten())
@@ -350,9 +346,8 @@ async def tts_stream_zero_shot(
         try:
             if prompt_wav is not None:
                 tmp_path = save_upload_to_temp(prompt_wav)
-                prompt_speech = load_wav(tmp_path, 16000)
                 gen = cosyvoice.inference_zero_shot(
-                    tts_text, prompt_text, prompt_speech, stream=True
+                    tts_text, prompt_text, tmp_path, stream=True
                 )
             elif speaker_id:
                 gen = cosyvoice.inference_zero_shot(
