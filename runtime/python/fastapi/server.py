@@ -25,7 +25,11 @@ import numpy as np
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append('{}/../../..'.format(ROOT_DIR))
 sys.path.append('{}/../../../third_party/Matcha-TTS'.format(ROOT_DIR))
+<<<<<<< HEAD
 from cosyvoice.cli.cosyvoice import CosyVoice, CosyVoice2, CosyVoice3
+=======
+from cosyvoice.cli.cosyvoice import AutoModel
+>>>>>>> ace7c47f41bbd303aa6bf1ea80e6f9fbd595cd40
 from cosyvoice.utils.file_utils import load_wav
 
 app = FastAPI()
@@ -89,9 +93,10 @@ if __name__ == '__main__':
                         default=50000)
     parser.add_argument('--model_dir',
                         type=str,
-                        default='iic/CosyVoice-300M',
+                        default='iic/CosyVoice2-0.5B',
                         help='local path or modelscope repo id')
     args = parser.parse_args()
+<<<<<<< HEAD
     try:
         cosyvoice = CosyVoice(args.model_dir)
     except Exception:
@@ -101,3 +106,7 @@ if __name__ == '__main__':
             raise TypeError('no valid model_type!')
     # uvicorn.run(app, host="0.0.0.0", port=args.port)
     uvicorn.run(app, host="10.255.1.115", port=args.port)
+=======
+    cosyvoice = AutoModel(model_dir=args.model_dir)
+    uvicorn.run(app, host="0.0.0.0", port=args.port)
+>>>>>>> ace7c47f41bbd303aa6bf1ea80e6f9fbd595cd40
