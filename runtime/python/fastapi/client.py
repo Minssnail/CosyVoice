@@ -65,7 +65,7 @@ if __name__ == "__main__":
                         type=int,
                         default='50000')
     parser.add_argument('--mode',
-                        default='sft',
+                        default='zero_shot',
                         choices=['sft', 'zero_shot', 'cross_lingual', 'instruct'],
                         help='request mode')
     parser.add_argument('--tts_text',
@@ -76,10 +76,13 @@ if __name__ == "__main__":
                         default='中文女')
     parser.add_argument('--prompt_text',
                         type=str,
-                        default='希望你以后能够做的比我还好呦。')
+                        default='想了解一个专业，您必须要知道专业基本情况、课程开设情况、人才培养模式，还有专业建设和发展。')
+                        # default='希望你以后能够做的比我还好呦。')
     parser.add_argument('--prompt_wav',
                         type=str,
-                        default='../../../asset/zero_shot_prompt.wav')
+                        default='E:/cosyVoice/prompt_audio/wudi.mp3')
+                        # default='./asset/zero_shot_prompt.wav')
+                        # default='../../../asset/zero_shot_prompt.wav')
     parser.add_argument('--instruct_text',
                         type=str,
                         default='Theo \'Crimson\', is a fiery, passionate rebel leader. \

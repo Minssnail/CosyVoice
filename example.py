@@ -77,10 +77,10 @@ def cosyvoice3_example():
                                                         './asset/zero_shot_prompt.wav', stream=False)):
         torchaudio.save('zero_shot_{}.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
-    # fine grained control, for supported control, check cosyvoice/tokenizer/tokenizer.py#L280
-    for i, j in enumerate(cosyvoice.inference_cross_lingual('You are a helpful assistant.<|endofprompt|>[breath]因为他们那一辈人[breath]在乡里面住的要习惯一点，[breath]邻居都很活络，[breath]嗯，都很熟悉。[breath]',
-                                                            './asset/zero_shot_prompt.wav', stream=False)):
-        torchaudio.save('fine_grained_control_{}.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
+    # # fine grained control, for supported control, check cosyvoice/tokenizer/tokenizer.py#L280
+    # for i, j in enumerate(cosyvoice.inference_cross_lingual('You are a helpful assistant.<|endofprompt|>[breath]因为他们那一辈人[breath]在乡里面住的要习惯一点，[breath]邻居都很活络，[breath]嗯，都很熟悉。[breath]',
+    #                                                         './asset/zero_shot_prompt.wav', stream=False)):
+    #     torchaudio.save('fine_grained_control_{}.wav'.format(i), j['tts_speech'], cosyvoice.sample_rate)
 
     # instruct usage, for supported control, check cosyvoice/utils/common.py#L28
     for i, j in enumerate(cosyvoice.inference_instruct2('好少咯，一般系放嗰啲国庆啊，中秋嗰啲可能会咯。', 'You are a helpful assistant. 请用广东话表达。<|endofprompt|>',
