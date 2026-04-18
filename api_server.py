@@ -386,10 +386,17 @@ if __name__ == '__main__':
     parser.add_argument('--model_dir', type=str,
                         default='pretrained_models/Fun-CosyVoice3-0.5B',
                         help='模型目录路径或 ModelScope repo id')
+    parser.add_argument('--fp16', action='store_true', default=True,
+                        help='启用 FP16 半精度推理 (默认开启, A40 支持)')
+    parser.add_argument('--no-fp16', dest='fp16', action='store_false',
+                        help='禁用 FP16, 使用 FP32 全精度')
+    parser.add_argument('--load_trt', action='store_true', default=False,
+                        help='启用 TensorRT 加速 Flow Decoder (需要先编译 TRT engine)')
     args = parser.parse_args()
 
     logger.info(f'正在加载模型: {args.model_dir}')
-    cosyvoice = AutoModel(model_dir=args.model_dir)
+    logger.info(f'FP16: {args.fp16} | TRT: {args.load_trt}')
+    cosyvoice = AutoModel(model_dir=args.model_dir, fp16=args.fp16, load_trt=args.load_trt)
     sample_rate = cosyvoice.sample_rate
 
     # 判断模型版本
@@ -402,8 +409,9 @@ if __name__ == '__main__':
         model_version = 'v1'
 
     app.state.model_dir = args.model_dir
-    logger.info(f'模型加载完成: version={model_version}, sample_rate={sample_rate}')
+    logger.info(f'模型加载完成: version={model_version}, sample_rate={sample_rate}, fp16={args.fp16}')
     logger.info(f'可用音色: {cosyvoice.list_available_spks()}')
+    logger.info(f'GPU 显存: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB' if torch.cuda.is_available() else 'CPU mode')
     logger.info(f'API 文档: http://{args.host}:{args.port}/docs')
 
     uvicorn.run(app, host=args.host, port=args.port, log_level='info')
